@@ -305,6 +305,19 @@ dev.off()
 #note the panel a is wider b/c the y axis labels are smaller, i could try to fix this if I was feeling anal
 
 
+###### How much wet/dry root mass was removed for staining ######
+
+mangrove %>%
+  summarise(
+    mean = mean(BelowGroundBiomassWetSubsample,na.rm=T),    
+    se = std.error(BelowGroundBiomassWetSubsample, na.rm=T))
+mangrove %>%
+  summarise(
+    mean = mean(BelowGroundBiomassDrySubsample,na.rm=T),    
+    se = std.error(BelowGroundBiomassDrySubsample, na.rm=T))
+
+mean(mangrove$BelowGroundBiomassDrySubsample,na.rm=T)/mean(mangrove$BelowGroundBiomassDry,na.rm=T)
+mean(mangrove$BelowGroundBiomassDrySubsample,na.rm=T)/mean(mangrove$TotalBiomass,na.rm=T)
 
 
 
