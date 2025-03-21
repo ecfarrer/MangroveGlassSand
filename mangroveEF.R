@@ -96,12 +96,18 @@ ggplot(mangrove, aes(x=Fungus, y=TotalBiomassg)) +
 
 m0<-gls(TotalBiomassg~Substrate*Inoculum, data=mangrove,na.action = na.omit)
 m1<-lme(TotalBiomassg~Substrate*Inoculum, random=~1|Fungus,data=mangrove,na.action = na.omit)
-hist(resid(m1))
+hist(resid(m1,type="pearson"))
 random.effects(m1)
 anova(m0,m1)
 anova(m1,type="marginal")
 r2_nakagawa(m1)
 rsquared(m1,method=NULL)
+#trying with transformation
+m2<-lme(sqrt(TotalBiomassg)~Substrate*Inoculum, random=~1|Fungus,data=mangrove,na.action = na.omit)
+anova(m2,type="marginal")
+hist(resid(m2,type="pearson"))
+
+
 
 #Fungal infection figure
 dfsummary <- mangrove %>%
@@ -146,12 +152,16 @@ ggplot(mangrove, aes(x=Fungus, y=AboveGroundBiomassg)) +
 
 m0<-gls(AboveGroundBiomassg~Substrate*Inoculum, data=mangrove,na.action = na.omit)
 m1<-lme(AboveGroundBiomassg~Substrate*Inoculum, random=~1|Fungus,data=mangrove,na.action = na.omit)
-hist(resid(m1))
+hist(resid(m1,type="pearson"))
 random.effects(m1)
 anova(m0,m1)
 anova(m1,type="marginal")
 r2_nakagawa(m1)
 rsquared(m1,method=NULL)
+#trying with transformation
+m2<-lme(sqrt(AboveGroundBiomassg)~Substrate*Inoculum, random=~1|Fungus,data=mangrove,na.action = na.omit)
+anova(m2,type="marginal")
+hist(resid(m2,type="pearson"))
 
 
 ###### Belowground biomass ######  
@@ -177,12 +187,16 @@ ggplot(mangrove, aes(x=Fungus, y=BelowGroundBiomassg)) +
 
 m0<-gls(BelowGroundBiomassg~Substrate*Inoculum, data=mangrove,na.action = na.omit)
 m1<-lme(BelowGroundBiomassg~Substrate*Inoculum, random=~1|Fungus,data=mangrove,na.action = na.omit)
-hist(resid(m1))
+hist(resid(m1,type="pearson"))
 random.effects(m1)
 anova(m0,m1)
 anova(m1,type="marginal")
 r2_nakagawa(m1)
 rsquared(m1,method=NULL)
+#trying with transformation
+m2<-lme(sqrt(BelowGroundBiomassg)~Substrate*Inoculum, random=~1|Fungus,data=mangrove,na.action = na.omit)
+hist(resid(m2,type="pearson"))
+anova(m2,type="marginal")
 
 
 
@@ -209,12 +223,19 @@ ggplot(mangrove, aes(x=Fungus, y=RootShootRatio)) +
 
 m0<-gls(RootShootRatio~Substrate*Inoculum, data=mangrove,na.action = na.omit)
 m1<-lme(RootShootRatio~Substrate*Inoculum, random=~1|Fungus,data=mangrove,na.action = na.omit)
-hist(resid(m1))
+hist(resid(m1,type="pearson"))
 random.effects(m1)
 anova(m0,m1)
 anova(m1,type="marginal")
 r2_nakagawa(m1)
 rsquared(m1,method=NULL)
+#trying transformation
+m2<-gls(log(RootShootRatio)~Substrate*Inoculum, data=mangrove,na.action = na.omit)
+m3<-lme(sqrt(RootShootRatio)~Substrate*Inoculum, random=~1|Fungus,data=mangrove,na.action = na.omit)
+hist(resid(m3,type="pearson"))
+anova(m2,m3)
+anova(m3,type="marginal")
+
 
 
 
@@ -249,6 +270,7 @@ ggplot(ms, aes(x=Fungus, y=mean,col=Fungus)) +
   geom_errorbar(aes(ymin=mean-se,ymax=mean+se))
 
 mangrove%>%
+  filter(Fungus=="Uninfected")%>%
   group_by(Inoculum)%>%
   summarize(mean=mean(Survival,na.rm=T))
 mangrove%>%
@@ -258,7 +280,6 @@ mangrove%>%
 
 m1<-glm(Survival~Substrate*Inoculum,family=binomial(link="logit"),data=mangrove)
 drop1(m1,test="Chisq",.~.)
-hist(resid(m1))
 rsquared(m1,method=NULL)
 
 
@@ -278,6 +299,14 @@ mc2<-glm(Survival~Substrate,family=binomial(link="logit"),data=mangrove)
 summary(glht(mc2, linfct = mcp(Substrate = "Tukey")))
 mc3<-glm(Survival~Inoculum,family=binomial(link="logit"),data=mangrove)
 summary(glht(mc3, linfct = mcp(Inoculum = "Tukey")))
+
+
+#Excluding fungus plants
+mangrovenof
+m1<-glm(Survival~Substrate*Inoculum,family=binomial(link="logit"),data=mangrovenof)
+drop1(m1,test="Chisq",.~.)
+rsquared(m1,method=NULL)
+
 
 
 ###### Final plot of total biomass, root:shoot, survival ######
@@ -373,26 +402,66 @@ ggplot(mangrove, aes(x=Substrate, y=FineRootLengthm,fill=Inoculum)) +
 ggplot(mangrove, aes(x=Substrate, y=FineRootLengthm,fill=Fungus)) +
   geom_boxplot()
 
-m0<-gls(FineRootLengthm~Substrate*Inoculum, data=mangrove,na.action = na.omit)
-m1<-lme(FineRootLengthm~Substrate*Inoculum, random=~1|Fungus, data=mangrove,na.action = na.omit)
-anova(m0,m1)
-anova(m1,type="marginal")
-rsquared(m1)
+# m0<-gls(FineRootLengthm~Substrate*Inoculum, data=mangrove,na.action = na.omit)
+# m1<-lme(FineRootLengthm~Substrate*Inoculum, random=~1|Fungus, data=mangrove,na.action = na.omit)
+# hist(resid(m1,type="pearson"))
+# anova(m0,m1)
+# anova(m1,type="marginal")
+# rsquared(m1)
 # r2_nakagawa(m1)
 # random.effects(m1)
 # check_singularity(m1)
+#trying transformation
+m2<-gls(sqrt(FineRootLengthm)~Substrate*Inoculum, data=mangrove,na.action = na.omit)
+m3<-lme(sqrt(FineRootLengthm)~Substrate*Inoculum, random=~1|Fungus,data=mangrove,na.action = na.omit)
+hist(resid(m3,type="pearson"))
+anova(m2,m3)
+anova(m3,type="marginal")
+rsquared(m3)
+# m3<-lme(log(FineRootLengthm)~Substrate*Inoculum, random=~1|Fungus,data=mangrove,na.action = na.omit)
+# hist(resid(m3,type="pearson"))
 
-#with fungus as fixed, doesn't change anything
+mc<-lme(sqrt(FineRootLengthm)~Substrate*Inoculum,random=~1|Fungus,data=mangrove,na.action=na.omit)
+summary(glht(mc, linfct = mcp(Substrate = "Tukey")))
+# mc<-lme(FineRootLengthm~SubstrateInoculum,random=~1|Fungus,data=mangrove,na.action=na.omit)
+# summary(glht(mc, linfct = mcp(SubstrateInoculum = "Tukey")))
+
+
+#With fungus as fixed, doesn't change anything
 m0<-gls(FineRootLengthm~Substrate*Inoculum+Fungus, data=mangrove,na.action = na.omit)
 anova(m0,type="marginal")
 rsquared(m0)
 summary(glht(m0, linfct = mcp(Substrate = "Tukey")))
 
 
-mc<-lme(FineRootLengthm~Substrate*Inoculum,random=~1|Fungus,data=mangrove,na.action=na.omit)
+#Excluding the fungus plants
+mangrovenof<-mangrove%>%
+  filter(Fungus=="Uninfected")
+dfsummary <- mangrovenof %>%
+  group_by(Substrate, Inoculum) %>%
+  summarise(
+    se = std.error(FineRootLengthm),
+    FineRootLengthm = mean(FineRootLengthm,na.rm=T))
+ggplot(mangrovenof, aes(x=Substrate, y=FineRootLengthm,color=Inoculum)) +
+  labs(x = "Substrate",y="Fine root length (m)") +
+  theme_classic()+
+  theme(line=element_line(size=.3),text=element_text(size=10),legend.position = "none")+
+  geom_point(data=dfsummary,size=1.8,aes(color=Inoculum,group=Inoculum),position = position_dodge(0.8))+
+  geom_point(size=.7,aes(fill=Inoculum,group=Inoculum),position = position_jitterdodge(jitter.width=.2),alpha=rep(.4,48))+
+  geom_errorbar(aes(ymin = FineRootLengthm-se, ymax = FineRootLengthm+se), data = dfsummary, width = 0.4, position = position_dodge(0.8))+
+  scale_color_manual(values = c("#6c66be", "#8ca54f")) +
+  annotate("text",x = c(1,2,3), y = 35, label = c("a","ab","b"),size=3)
+
+m0<-gls(FineRootLengthm~Substrate*Inoculum, data=mangrovenof,na.action = na.omit)
+m0<-gls(sqrt(FineRootLengthm)~Substrate*Inoculum, data=mangrovenof,na.action = na.omit)
+hist(resid(m0,type="pearson"))
+anova(m0,type="marginal")
+rsquared(m1)
+
+mc<-gls(sqrt(FineRootLengthm)~Substrate*Inoculum,data=mangrovenof,na.action=na.omit)
 summary(glht(mc, linfct = mcp(Substrate = "Tukey")))
-mc<-lme(FineRootLengthm~SubstrateInoculum,random=~1|Fungus,data=mangrove,na.action=na.omit)
-summary(glht(mc, linfct = mcp(SubstrateInoculum = "Tukey")))
+
+
 
 #Fungus figure
 dfsummary <- mangrove %>%
@@ -433,12 +502,23 @@ ggplot(mangrove, aes(x=Substrate, y=Root.Length.Diameter.Range.4.m,fill=Inoculum
 ggplot(mangrove, aes(x=Substrate, y=Root.Length.Diameter.Range.4.m,fill=Fungus)) +
   geom_boxplot()
 
-m0<-gls(Root.Length.Diameter.Range.4.m~Substrate*Inoculum, data=mangrove,na.action = na.omit)
-m1<-lme(Root.Length.Diameter.Range.4.m~Substrate*Inoculum, random=~1|Fungus, data=mangrove,na.action = na.omit)
-anova(m0,m1)
-anova(m1,type="marginal")
-rsquared(m1)
-r2_nakagawa(m1)
+# m0<-gls(Root.Length.Diameter.Range.4.m~Substrate*Inoculum, data=mangrove,na.action = na.omit)
+# m1<-lme(Root.Length.Diameter.Range.4.m~Substrate*Inoculum, random=~1|Fungus, data=mangrove,na.action = na.omit)
+# hist(resid(m1,type="pearson"))
+# anova(m0,m1)
+# anova(m1,type="marginal")
+# rsquared(m1)
+# r2_nakagawa(m1)
+#Trying transformation - use LOG
+# m2<-gls(sqrt(Root.Length.Diameter.Range.4.m)~Substrate*Inoculum, data=mangrove,na.action = na.omit)
+# m3<-lme(sqrt(Root.Length.Diameter.Range.4.m)~Substrate*Inoculum, random=~1|Fungus,data=mangrove,na.action = na.omit)
+# hist(resid(m3,type="pearson"))
+m2<-gls(log(Root.Length.Diameter.Range.4.m+1)~Substrate*Inoculum, data=mangrove,na.action = na.omit)
+m3<-lme(log(Root.Length.Diameter.Range.4.m+1)~Substrate*Inoculum, random=~1|Fungus,data=mangrove,na.action = na.omit)
+hist(resid(m3,type="pearson"))
+anova(m2,m3)
+anova(m3,type="marginal")
+rsquared(m3)
 
 ggplot(mangrove, aes(x=Substrate, y=Root.Length.Diameter.Range.4.mm,fill=Inoculum)) +
   geom_boxplot()
@@ -488,15 +568,27 @@ ggplot(mangrove, aes(x=Substrate, y=Average.Diameter.mm,fill=Inoculum)) +
 ggplot(mangrove, aes(x=Fungus, y=Average.Diameter.mm,fill=Fungus)) +
   geom_boxplot()
 
-m0<-gls(Average.Diameter.mm~Substrate*Inoculum, data=mangrove,na.action = na.omit)
-m1<-lme(Average.Diameter.mm~Substrate*Inoculum, random=~1|Fungus, data=mangrove,na.action = na.omit)
-anova(m0,m1)
-anova(m1,type="marginal")
-rsquared(m1)
+# m0<-gls(Average.Diameter.mm~Substrate*Inoculum, data=mangrove,na.action = na.omit)
+# m1<-lme(Average.Diameter.mm~Substrate*Inoculum, random=~1|Fungus, data=mangrove,na.action = na.omit)
+# hist(resid(m1,type="pearson"))
+# anova(m0,m1)
+# anova(m1,type="marginal")
+# rsquared(m1)
 # r2_nakagawa(m1)
 # random.effects(m1)
+#trying transformation - use sqrt
+m2<-gls(sqrt(Average.Diameter.mm)~Substrate*Inoculum, data=mangrove,na.action = na.omit)
+m3<-lme(sqrt(Average.Diameter.mm)~Substrate*Inoculum, random=~1|Fungus,data=mangrove,na.action = na.omit)
+hist(resid(m3,type="pearson"))
+anova(m2,m3)
+anova(m3,type="marginal")
+rsquared(m3)
+# m3<-lme(log(Average.Diameter.mm)~Substrate*Inoculum, random=~1|Fungus,data=mangrove,na.action = na.omit)
+# hist(resid(m3,type="pearson"))
 
-mc<-lme(Average.Diameter.mm~Substrate*Inoculum,random=~1|Fungus,data=mangrove,na.action=na.omit)
+
+
+mc<-lme(sqrt(Average.Diameter.mm)~Substrate*Inoculum,random=~1|Fungus,data=mangrove,na.action=na.omit)
 summary(glht(mc, linfct = mcp(Substrate = "Tukey")))
 # mc<-lme(FineRootLengthm~SubstrateInoculum,random=~1|Fungus,data=mangrove,na.action=na.omit)
 # summary(glht(mc, linfct = mcp(SubstrateInoculum = "Tukey")))
@@ -534,6 +626,7 @@ rsquared(m1)
 
 
 ###### Kathryn's volume measurement in lab ######
+#Use this
 dfsummary <- mangrove %>%
   group_by(Substrate, Inoculum) %>%
   summarise(
@@ -557,9 +650,20 @@ ggplot(mangrove, aes(x=Fungus, y=RootVolumeML,fill=Fungus)) +
 
 m0<-gls(RootVolumeML~Substrate*Inoculum, data=mangrove,na.action = na.omit)
 m1<-lme(RootVolumeML~Substrate*Inoculum, random=~1|Fungus, data=mangrove,na.action = na.omit)
+hist(resid(m1,type="pearson"))
 anova(m0,m1)
 anova(m1,type="marginal")
 rsquared(m1)
+#trying transformation
+m2<-gls(sqrt(RootVolumeML)~Substrate*Inoculum, data=mangrove,na.action = na.omit)
+m3<-lme(sqrt(RootVolumeML)~Substrate*Inoculum, random=~1|Fungus,data=mangrove,na.action = na.omit)
+hist(resid(m3,type="pearson"))
+m2<-gls(log(RootVolumeML)~Substrate*Inoculum, data=mangrove,na.action = na.omit)
+m3<-lme(log(RootVolumeML)~Substrate*Inoculum, random=~1|Fungus,data=mangrove,na.action = na.omit)
+anova(m2,m3)
+anova(m3,type="marginal")
+hist(resid(m3,type="pearson"))
+
 
 #Fungus figure
 dfsummary <- mangrove %>%
@@ -603,17 +707,32 @@ ggplot(mangrove, aes(x=Substrate, y=SRL,fill=Inoculum)) +
 ggplot(mangrove, aes(x=Fungus, y=SRL,fill=Fungus)) +
   geom_boxplot()
 
-m0<-gls(SRL~Substrate*Inoculum, data=mangrove,na.action = na.omit)
-m1<-lme(SRL~Substrate*Inoculum, random=~1|Fungus, data=mangrove,na.action = na.omit)
-anova(m0,m1)
-anova(m1,type="marginal")
-rsquared(m1)
+# m0<-gls(SRL~Substrate*Inoculum, data=mangrove,na.action = na.omit)
+# m1<-lme(SRL~Substrate*Inoculum, random=~1|Fungus, data=mangrove,na.action = na.omit)
+# hist(resid(m1,type="pearson"))
+# anova(m0,m1)
+# anova(m1,type="marginal")
+# rsquared(m1)
 # r2_nakagawa(m1)
+#trying transformation
+m2<-gls(sqrt(SRL)~Substrate*Inoculum, data=mangrove,na.action = na.omit)
+m3<-lme(sqrt(SRL)~Substrate*Inoculum, random=~1|Fungus,data=mangrove,na.action = na.omit)
+hist(resid(m3,type="pearson"))
+anova(m2,m3)
+anova(m3,type="marginal")
+rsquared(m3)
+# m2<-gls(log(SRL)~Substrate*Inoculum, data=mangrove,na.action = na.omit)
+# m3<-lme(log(SRL)~Substrate*Inoculum, random=~1|Fungus,data=mangrove,na.action = na.omit)
+# hist(resid(m3,type="pearson"))
 
-mc<-lme(SRL~Substrate*Inoculum,random=~1|Fungus,data=mangrove,na.action=na.omit)
+
+mc<-lme(sqrt(SRL)~Substrate*Inoculum,random=~1|Fungus,data=mangrove,na.action=na.omit)
 summary(glht(mc, linfct = mcp(Substrate = "Tukey")))
 # mc<-lme(SRL~SubstrateInoculum,random=~1|Fungus,data=mangrove,na.action=na.omit)
 # summary(glht(mc, linfct = mcp(SubstrateInoculum = "Tukey")))
+
+#Excluding fungus
+
 
 
 #Root tissue density - winrhizo
@@ -646,12 +765,25 @@ ggplot(mangrove, aes(x=Substrate, y=RTDlab,fill=Inoculum)) +
 ggplot(mangrove, aes(x=Fungus, y=RTDlab,fill=Fungus)) +
   geom_boxplot()
 
-m0<-gls(RTDlab~Substrate*Inoculum, data=mangrove,na.action = na.omit)
-m1<-lme(RTDlab~Substrate*Inoculum, random=~1|Fungus, data=mangrove,na.action = na.omit)
-anova(m0,m1)
-anova(m1,type="marginal")
-rsquared(m1)
+# m0<-gls(RTDlab~Substrate*Inoculum, data=mangrove,na.action = na.omit)
+# m1<-lme(RTDlab~Substrate*Inoculum, random=~1|Fungus, data=mangrove,na.action = na.omit)
+# hist(resid(m1,type="pearson"))
+# anova(m0,m1)
+# anova(m1,type="marginal")
+# rsquared(m1)
 # r2_nakagawa(m1)
+#trying transformation
+# m2<-gls(sqrt(RTDlab)~Substrate*Inoculum, data=mangrove,na.action = na.omit)
+# m3<-lme(sqrt(RTDlab)~Substrate*Inoculum, random=~1|Fungus,data=mangrove,na.action = na.omit)
+# hist(resid(m3,type="pearson"))
+# anova(m2,m3)
+# anova(m3,type="marginal")
+m2<-gls(log(RTDlab)~Substrate*Inoculum, data=mangrove,na.action = na.omit)
+m3<-lme(log(RTDlab)~Substrate*Inoculum, random=~1|Fungus,data=mangrove,na.action = na.omit)
+hist(resid(m3,type="pearson"))
+anova(m2,m3)
+anova(m3,type="marginal")
+rsquared(m3)
 
 mc<-lme(RTDlab~Substrate*Inoculum,random=~1|Fungus,data=mangrove,na.action=na.omit)
 summary(glht(mc, linfct = mcp(Substrate = "Tukey")))
@@ -688,10 +820,23 @@ ggplot(mangrove, aes(x=Fungus, y=RBI,fill=Fungus)) +
 
 m0<-gls(RBI~Substrate*Inoculum, data=mangrove,na.action = na.omit)
 m1<-lme(RBI~Substrate*Inoculum, random=~1|Fungus, data=mangrove,na.action = na.omit)
+hist(resid(m1,type="pearson"))
 anova(m0,m1)
 anova(m1,type="marginal")
 rsquared(m1)
 # r2_nakagawa(m1)
+#trying transformation
+m2<-gls(sqrt(RBI)~Substrate*Inoculum, data=mangrove,na.action = na.omit)
+m3<-lme(sqrt(RBI)~Substrate*Inoculum, random=~1|Fungus,data=mangrove,na.action = na.omit)
+hist(resid(m3,type="pearson"))
+anova(m2,m3)
+anova(m3,type="marginal")
+m2<-gls(log(RBI)~Substrate*Inoculum, data=mangrove,na.action = na.omit)
+m3<-lme(log(RBI)~Substrate*Inoculum, random=~1|Fungus,data=mangrove,na.action = na.omit)
+hist(resid(m3,type="pearson"))
+anova(m2,m3)
+anova(m3,type="marginal")
+
 
 #mc<-lme(RBI~Substrate*Inoculum,random=~1|Fungus,data=mangrove,na.action=na.omit)
 #summary(glht(mc, linfct = mcp(Substrate = "Tukey")))
