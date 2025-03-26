@@ -102,12 +102,26 @@ anova(m0,m1)
 anova(m1,type="marginal")
 r2_nakagawa(m1)
 rsquared(m1,method=NULL)
-#trying with transformation
-m2<-lme(sqrt(TotalBiomassg)~Substrate*Inoculum, random=~1|Fungus,data=mangrove,na.action = na.omit)
-anova(m2,type="marginal")
-hist(resid(m2,type="pearson"))
+#Trying with transformation
+# m2<-lme(sqrt(TotalBiomassg)~Substrate*Inoculum, random=~1|Fungus,data=mangrove,na.action = na.omit)
+# anova(m2,type="marginal")
+# hist(resid(m2,type="pearson"))
 
-
+#Analysis excluding fungus plants
+mangrovenof
+m0<-gls(TotalBiomassg~Substrate*Inoculum, data=mangrovenof,na.action = na.omit)
+hist(resid(m0,type="pearson"))
+anova(m0,type="marginal")
+summary(m0)
+rsquared(m0,method=NULL)
+# SSR<-sum((residuals(m0,type="response")^2))
+# SST<-sum((mangrovenof$TotalBiomassg - mean(mangrovenof$TotalBiomassg,na.rm=T))^2,na.rm=T)
+# R2<-1-SSR/SST
+# n<-sum(!is.na(mangrovenof$TotalBiomassg))
+# k<-5 #(number of fixed effects parameters)
+# 1-((1 - R2) * (n - 1)/ (n - k - 1))
+# m1<-lm(TotalBiomassg~Substrate*Inoculum, data=mangrovenof,na.action = na.omit)
+# summary(m1)
 
 #Fungal infection figure
 dfsummary <- mangrove %>%
@@ -158,10 +172,27 @@ anova(m0,m1)
 anova(m1,type="marginal")
 r2_nakagawa(m1)
 rsquared(m1,method=NULL)
-#trying with transformation
-m2<-lme(sqrt(AboveGroundBiomassg)~Substrate*Inoculum, random=~1|Fungus,data=mangrove,na.action = na.omit)
-anova(m2,type="marginal")
-hist(resid(m2,type="pearson"))
+#Trying with transformation
+# m2<-lme(sqrt(AboveGroundBiomassg)~Substrate*Inoculum, random=~1|Fungus,data=mangrove,na.action = na.omit)
+# anova(m2,type="marginal")
+# hist(resid(m2,type="pearson"))
+ 
+#Analysis excluding fungus plants
+mangrovenof
+m0<-gls(AboveGroundBiomassg~Substrate*Inoculum, data=mangrovenof,na.action = na.omit)
+hist(resid(m0,type="pearson"))
+anova(m0,type="marginal")
+summary(m0)
+rsquared(m0,method=NULL)
+# SSR<-sum((residuals(m0,type="response")^2))
+# SST<-sum((mangrovenof$AboveGroundBiomassg - mean(mangrovenof$AboveGroundBiomassg,na.rm=T))^2,na.rm=T)
+# R2<-1-SSR/SST
+# n<-sum(!is.na(mangrovenof$AboveGroundBiomassg))
+# k<-5 #(number of fixed effects parameters)
+# 1-((1 - R2) * (n - 1)/ (n - k - 1))
+# m1<-lm(AboveGroundBiomassg~Substrate*Inoculum, data=mangrovenof,na.action = na.omit)
+# summary(m1)
+
 
 
 ###### Belowground biomass ######  
@@ -193,10 +224,26 @@ anova(m0,m1)
 anova(m1,type="marginal")
 r2_nakagawa(m1)
 rsquared(m1,method=NULL)
-#trying with transformation
-m2<-lme(sqrt(BelowGroundBiomassg)~Substrate*Inoculum, random=~1|Fungus,data=mangrove,na.action = na.omit)
-hist(resid(m2,type="pearson"))
-anova(m2,type="marginal")
+#Trying with transformation
+# m2<-lme(sqrt(BelowGroundBiomassg)~Substrate*Inoculum, random=~1|Fungus,data=mangrove,na.action = na.omit)
+# hist(resid(m2,type="pearson"))
+# anova(m2,type="marginal")
+
+#Analysis excluding fungus plants
+mangrovenof
+m0<-gls(BelowGroundBiomassg~Substrate*Inoculum, data=mangrovenof,na.action = na.omit)
+hist(resid(m0,type="pearson"))
+anova(m0,type="marginal")
+summary(m0)
+rsquared(m0)
+# SSR<-sum((residuals(m0,type="response")^2))
+# SST<-sum((mangrovenof$BelowGroundBiomassg - mean(mangrovenof$BelowGroundBiomassg,na.rm=T))^2,na.rm=T)
+# R2<-1-SSR/SST
+# n<-sum(!is.na(mangrovenof$BelowGroundBiomassg))
+# k<-5 #(number of fixed effects parameters)
+# 1-((1 - R2) * (n - 1)/ (n - k - 1))
+# m1<-lm(BelowGroundBiomassg~Substrate*Inoculum, data=mangrovenof,na.action = na.omit)
+# summary(m1)
 
 
 
@@ -229,14 +276,28 @@ anova(m0,m1)
 anova(m1,type="marginal")
 r2_nakagawa(m1)
 rsquared(m1,method=NULL)
-#trying transformation
-m2<-gls(log(RootShootRatio)~Substrate*Inoculum, data=mangrove,na.action = na.omit)
-m3<-lme(sqrt(RootShootRatio)~Substrate*Inoculum, random=~1|Fungus,data=mangrove,na.action = na.omit)
-hist(resid(m3,type="pearson"))
-anova(m2,m3)
-anova(m3,type="marginal")
+#Trying transformation
+# m2<-gls(log(RootShootRatio)~Substrate*Inoculum, data=mangrove,na.action = na.omit)
+# m3<-lme(sqrt(RootShootRatio)~Substrate*Inoculum, random=~1|Fungus,data=mangrove,na.action = na.omit)
+# hist(resid(m3,type="pearson"))
+# anova(m2,m3)
+# anova(m3,type="marginal")
 
-
+#Analysis excluding fungus plants
+mangrovenof
+m0<-gls(RootShootRatio~Substrate*Inoculum, data=mangrovenof,na.action = na.omit)
+hist(resid(m0,type="pearson"))
+anova(m0,type="marginal")
+summary(m0)
+rsquared(m0)
+# SSR<-sum((residuals(m0,type="response")^2))
+# SST<-sum((mangrovenof$RootShootRatio - mean(mangrovenof$RootShootRatio,na.rm=T))^2,na.rm=T)
+# R2<-1-SSR/SST
+# n<-sum(!is.na(mangrovenof$RootShootRatio))
+# k<-5 #(number of fixed effects parameters)
+# 1-((1 - R2) * (n - 1)/ (n - k - 1))
+# m1<-lm(RootShootRatio~Substrate*Inoculum, data=mangrovenof,na.action = na.omit)
+# summary(m1)
 
 
 ###### Survival ######
@@ -289,7 +350,6 @@ m2<-glmer(Survival~Substrate*Inoculum+(1|Fungus),family=binomial,data=mangrove)
 library(car)
 Anova(m2,type="III")
 anova(m2,m1)
-
 
 
 mc<-glm(Survival~SubstrateInoculum,family=binomial(link="logit"),data=mangrove)
@@ -421,6 +481,18 @@ rsquared(m3)
 # m3<-lme(log(FineRootLengthm)~Substrate*Inoculum, random=~1|Fungus,data=mangrove,na.action = na.omit)
 # hist(resid(m3,type="pearson"))
 
+#Analysis excluding fungus plants
+mangrovenof
+m0<-gls(sqrt(FineRootLengthm)~Substrate*Inoculum, data=mangrovenof,na.action = na.omit)
+hist(resid(m0,type="pearson"))
+anova(m0,type="marginal")
+summary(m0)
+rsquared(m0)
+# m1<-lm(sqrt(FineRootLengthm)~Substrate*Inoculum, data=mangrovenof,na.action = na.omit)
+# summary(m1)
+
+
+
 mc<-lme(sqrt(FineRootLengthm)~Substrate*Inoculum,random=~1|Fungus,data=mangrove,na.action=na.omit)
 summary(glht(mc, linfct = mcp(Substrate = "Tukey")))
 # mc<-lme(FineRootLengthm~SubstrateInoculum,random=~1|Fungus,data=mangrove,na.action=na.omit)
@@ -520,6 +592,16 @@ anova(m2,m3)
 anova(m3,type="marginal")
 rsquared(m3)
 
+#Analysis excluding fungus plants
+mangrovenof
+m0<-gls(log(Root.Length.Diameter.Range.4.m+1)~Substrate*Inoculum, data=mangrovenof,na.action = na.omit)
+hist(resid(m0,type="pearson"))
+anova(m0,type="marginal")
+summary(m0)
+rsquared(m0)
+# m1<-lm(log(Root.Length.Diameter.Range.4.m+1)~Substrate*Inoculum, data=mangrovenof,na.action = na.omit)
+# summary(m1)
+
 ggplot(mangrove, aes(x=Substrate, y=Root.Length.Diameter.Range.4.mm,fill=Inoculum)) +
   geom_boxplot()
 m1<-gls(Root.Length.Diameter.Range.4.mm~Substrate*Inoculum, data=mangrove,na.action = na.omit)
@@ -562,6 +644,10 @@ pdia<-
   scale_color_manual(values = c("#6c66be", "#8ca54f")) +
   annotate("text",x = c(1,2,3), y = .7, label = c("a","ab","b"),size=3)
 
+mangrove %>%
+  group_by(Substrate) %>%
+  summarise(
+    Average.Diameter.mm = mean(Average.Diameter.mm,na.rm=T))
 
 ggplot(mangrove, aes(x=Substrate, y=Average.Diameter.mm,fill=Inoculum)) +
   geom_boxplot()
@@ -585,6 +671,18 @@ anova(m3,type="marginal")
 rsquared(m3)
 # m3<-lme(log(Average.Diameter.mm)~Substrate*Inoculum, random=~1|Fungus,data=mangrove,na.action = na.omit)
 # hist(resid(m3,type="pearson"))
+
+#Analysis excluding fungus plants, log is better but i will use sqrt to be consistent with above. it makes no difference to the anova results
+mangrovenof
+m0<-gls(sqrt(Average.Diameter.mm)~Substrate*Inoculum, data=mangrovenof,na.action = na.omit)
+#m0<-gls(Average.Diameter.mm~Substrate*Inoculum, data=mangrovenof,na.action = na.omit)
+#m0<-gls(log(Average.Diameter.mm)~Substrate*Inoculum, data=mangrovenof,na.action = na.omit)
+hist(resid(m0,type="pearson"))
+anova(m0,type="marginal")
+summary(m0)
+rsquared(m0)
+# m1<-lm(sqrt(Average.Diameter.mm)~Substrate*Inoculum, data=mangrovenof,na.action = na.omit)
+# summary(m1)
 
 
 
@@ -654,16 +752,26 @@ hist(resid(m1,type="pearson"))
 anova(m0,m1)
 anova(m1,type="marginal")
 rsquared(m1)
-#trying transformation
-m2<-gls(sqrt(RootVolumeML)~Substrate*Inoculum, data=mangrove,na.action = na.omit)
-m3<-lme(sqrt(RootVolumeML)~Substrate*Inoculum, random=~1|Fungus,data=mangrove,na.action = na.omit)
-hist(resid(m3,type="pearson"))
-m2<-gls(log(RootVolumeML)~Substrate*Inoculum, data=mangrove,na.action = na.omit)
-m3<-lme(log(RootVolumeML)~Substrate*Inoculum, random=~1|Fungus,data=mangrove,na.action = na.omit)
-anova(m2,m3)
-anova(m3,type="marginal")
-hist(resid(m3,type="pearson"))
 
+#Trying transformation
+# m2<-gls(sqrt(RootVolumeML)~Substrate*Inoculum, data=mangrove,na.action = na.omit)
+# m3<-lme(sqrt(RootVolumeML)~Substrate*Inoculum, random=~1|Fungus,data=mangrove,na.action = na.omit)
+# hist(resid(m3,type="pearson"))
+# m2<-gls(log(RootVolumeML)~Substrate*Inoculum, data=mangrove,na.action = na.omit)
+# m3<-lme(log(RootVolumeML)~Substrate*Inoculum, random=~1|Fungus,data=mangrove,na.action = na.omit)
+# anova(m2,m3)
+# anova(m3,type="marginal")
+# hist(resid(m3,type="pearson"))
+
+#Analysis excluding fungus plants
+mangrovenof
+m0<-gls(RootVolumeML~Substrate*Inoculum, data=mangrovenof,na.action = na.omit)
+hist(resid(m0,type="pearson"))
+anova(m0,type="marginal")
+summary(m0)
+rsquared(m0)
+# m1<-lm(RootVolumeML~Substrate*Inoculum, data=mangrovenof,na.action = na.omit)
+# summary(m1)
 
 #Fungus figure
 dfsummary <- mangrove %>%
@@ -702,6 +810,16 @@ psrl<-
   scale_color_manual(values = c("#6c66be", "#8ca54f")) +
   annotate("text",x = c(1,2,3), y = 95, label = c("a","b","b"),size=3)
 
+mangrove %>%
+  group_by(Substrate) %>%
+  summarise(SRL = mean(SRL,na.rm=T))
+
+mangrove %>%
+  group_by(Substrate) %>%
+  summarise(n=sum(!is.na(SRL)),
+            se = std.error(SRL),
+    SRL = mean(SRL,na.rm=T))
+
 ggplot(mangrove, aes(x=Substrate, y=SRL,fill=Inoculum)) +
   geom_boxplot()
 ggplot(mangrove, aes(x=Fungus, y=SRL,fill=Fungus)) +
@@ -724,6 +842,16 @@ rsquared(m3)
 # m2<-gls(log(SRL)~Substrate*Inoculum, data=mangrove,na.action = na.omit)
 # m3<-lme(log(SRL)~Substrate*Inoculum, random=~1|Fungus,data=mangrove,na.action = na.omit)
 # hist(resid(m3,type="pearson"))
+
+#Analysis excluding fungus plants
+mangrovenof
+m0<-gls(sqrt(SRL)~Substrate*Inoculum, data=mangrovenof,na.action = na.omit)
+hist(resid(m0,type="pearson"))
+anova(m0,type="marginal")
+summary(m0)
+rsquared(m0)
+# m1<-lm(sqrt(SRL)~Substrate*Inoculum, data=mangrovenof,na.action = na.omit)
+# summary(m1)
 
 
 mc<-lme(sqrt(SRL)~Substrate*Inoculum,random=~1|Fungus,data=mangrove,na.action=na.omit)
@@ -785,6 +913,17 @@ anova(m2,m3)
 anova(m3,type="marginal")
 rsquared(m3)
 
+#Analysis excluding fungus plants
+mangrovenof
+m0<-gls(log(RTDlab)~Substrate*Inoculum, data=mangrovenof,na.action = na.omit)
+hist(resid(m0,type="pearson"))
+anova(m0,type="marginal")
+summary(m0)
+rsquared(m0)
+# m1<-lm(log(RTDlab)~Substrate*Inoculum, data=mangrovenof,na.action = na.omit)
+# summary(m1)
+
+
 mc<-lme(RTDlab~Substrate*Inoculum,random=~1|Fungus,data=mangrove,na.action=na.omit)
 summary(glht(mc, linfct = mcp(Substrate = "Tukey")))
 # mc<-lme(SRL~SubstrateInoculum,random=~1|Fungus,data=mangrove,na.action=na.omit)
@@ -813,6 +952,14 @@ prbi<-
   scale_color_manual(values = c("#6c66be", "#8ca54f")) 
 #  annotate("text",x = c(1,2,3), y = 95, label = c("a","b","b"),size=3)
 
+
+mangrove %>%
+  group_by(Substrate, Inoculum) %>%
+  summarise(n=sum(!is.na(RBI)),
+            se = std.error(RBI),
+            RBI = mean(RBI,na.rm=T))
+boxplot(mangrove$RBI)
+
 ggplot(mangrove, aes(x=Substrate, y=RBI,fill=Inoculum)) +
   geom_boxplot()
 ggplot(mangrove, aes(x=Fungus, y=RBI,fill=Fungus)) +
@@ -826,16 +973,26 @@ anova(m1,type="marginal")
 rsquared(m1)
 # r2_nakagawa(m1)
 #trying transformation
-m2<-gls(sqrt(RBI)~Substrate*Inoculum, data=mangrove,na.action = na.omit)
-m3<-lme(sqrt(RBI)~Substrate*Inoculum, random=~1|Fungus,data=mangrove,na.action = na.omit)
-hist(resid(m3,type="pearson"))
-anova(m2,m3)
-anova(m3,type="marginal")
-m2<-gls(log(RBI)~Substrate*Inoculum, data=mangrove,na.action = na.omit)
-m3<-lme(log(RBI)~Substrate*Inoculum, random=~1|Fungus,data=mangrove,na.action = na.omit)
-hist(resid(m3,type="pearson"))
-anova(m2,m3)
-anova(m3,type="marginal")
+# m2<-gls(sqrt(RBI)~Substrate*Inoculum, data=mangrove,na.action = na.omit)
+# m3<-lme(sqrt(RBI)~Substrate*Inoculum, random=~1|Fungus,data=mangrove,na.action = na.omit)
+# hist(resid(m3,type="pearson"))
+# anova(m2,m3)
+# anova(m3,type="marginal")
+# m2<-gls(log(RBI)~Substrate*Inoculum, data=mangrove,na.action = na.omit)
+# m3<-lme(log(RBI)~Substrate*Inoculum, random=~1|Fungus,data=mangrove,na.action = na.omit)
+# hist(resid(m3,type="pearson"))
+# anova(m2,m3)
+# anova(m3,type="marginal")
+
+#Analysis excluding fungus plants
+mangrovenof
+m0<-gls(RBI~Substrate*Inoculum, data=mangrovenof,na.action = na.omit)
+hist(resid(m0,type="pearson"))
+anova(m0,type="marginal")
+summary(m0)
+rsquared(m0)
+# m1<-lm(RBI~Substrate*Inoculum, data=mangrovenof,na.action = na.omit)
+# summary(m1)
 
 
 #mc<-lme(RBI~Substrate*Inoculum,random=~1|Fungus,data=mangrove,na.action=na.omit)
