@@ -426,7 +426,7 @@ mean(mangrove$BelowGroundBiomassDrySubsample,na.rm=T)/mean(mangrove$TotalBiomass
 # Number.of.Branch.Points - correlated with total root length
 # Branching frequency - results are odd, weird interaction
 # Network.Area.mm2 - correlated with total root length
-# Median.Diameter.mm - kind of corrlated with avg diameter
+# Median.Diameter.mm - kind of correlated with avg diameter
 # Maximum.Diameter.mm - meh
 # Perimeter.mm - very tightly correlated with total root length 
 # Surface.Area.mm2 - highly correlated with total root length
@@ -1104,7 +1104,8 @@ anova(m1,type="marginal")
 
 
 
-
+##### Exporting data for EDI #####
+write.csv(mangrove,"/Users/farrer/Dropbox/EmilyComputerBackup/Documents/LAmarsh/Mangroves/Stats/mangrove.csv",row.names = F)
 
 
 ##### Fungal sequencing data #####
